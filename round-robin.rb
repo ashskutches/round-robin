@@ -41,9 +41,11 @@ class Tournament
   end
 
   def display_bracket
+    100.times { puts "\n" }
     @matches.each do |match|
-      puts "#{match.player1.name} vs #{match.player2.name}"
+      puts "Match: #{match.id} #{match.player1.name} vs #{match.player2.name}"
     end
+    puts "Please press any button to continue......."
     gets
   end
 
@@ -51,7 +53,10 @@ class Tournament
     index = -1
     name = ""
     while !name.include?("done") do
-      @players << Player.new(name, index) unless name.empty?
+      unless name.empty?
+        name = name.sub(/\n/, "")
+        @players << Player.new(name, index)
+      end
 
       100.times { puts "\n" }
       puts "Type done  when completed"
@@ -69,7 +74,8 @@ class Tournament
   def generate_bracket
     @matches = []
     @players.each do |player1|
-      (@players - [player1]).each { |player2| @matches << Match.new(player1, player2) }
+      @players = @players - [player1]
+      @players.each { |player2| @matches << Match.new(player1, player2) }
     end
   end
 end # Tournament
@@ -84,11 +90,14 @@ class Player
 end
 
 class Match
-  attr_accessor :player1, :player2
+  attr_accessor :id, :player1, :player2
+  @@index = 1
 
   def initialize(p1, p2)
     @player1 = p1
     @player2 = p2
+    @id = @@index
+    @@index = @@index +1
   end
 end
 
